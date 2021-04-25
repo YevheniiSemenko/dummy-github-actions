@@ -38,5 +38,5 @@ jobs:
           deliverables: app.yaml
           project_id: ${{ secrets.GCP_PROJECT }}
           credentials: ${{ secrets.GCP_SA_KEY }}
-          promote: false
-          version: test       
+          promote: true
+          version: test-sa
