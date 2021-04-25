@@ -35,8 +35,21 @@ jobs:
       - name: Show super secret password
         run: echo "${{ secrets.MY_SUPER_SECRET_PASSWORD }}"
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      - name: Decrypt large secret
+        run: ./.github/scripts/decrypt_secret.sh
+        env:
+          LARGE_SECRET_PASSPHRASE: ${{ secrets.MY_SUPER_SECRET_PASSWORD }}
+      # This command is just an example to show your secret being printed
+      # Ensure you remove any print statements of your secrets. GitHub does
+      # not hide secrets that use this workaround.
+      - name: Test printing your secret (Remove this step in production)
+        run: cat $HOME/secrets/my_secret.json          
+
+#      - name: Deploy to App Engine
+#        uses: google-github-actions/deploy-appengine@v0.2.0
+#        with:
+#          deliverables: app.yaml
+#          project_id: ${{ secrets.GCP_PROJECT }}
+#          credentials: ${{ secrets.GCP_SA_KEY }}
+#          promote: false
+#          version: v1          
