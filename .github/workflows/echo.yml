@@ -1,15 +1,12 @@
-# This is a basic workflow to help you get started with Actions
-
-name: echo_test
+# Name of workflow
+name: 
 
 # Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
+  # Triggers the workflow on push tag that match mask v*.*.*
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
+    tags:
+      - 'v*.*.*'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -22,14 +19,16 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - shell: bash
-        env:
-          SUPER_SECRET: ${{ secrets.MY_SUPER_SECRET_PASSWORD }}
-        run: |
-          echo "$SUPER_SECRET"
-
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+
+      # Put tag name into variable         
+      - name: Set tag name
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Test
+        run: |
+          echo $RELEASE_VERSION
+          echo ${{ env.RELEASE_VERSION }}        
 
       # Deploy to Google App Engine     
       - name: Deploy to App Engine
@@ -38,5 +37,5 @@ jobs:
           deliverables: app.yaml
           project_id: ${{ secrets.GCP_PROJECT }}
           credentials: ${{ secrets.GCP_SA_KEY }}
-          promote: false
-          version: test       
+          promote: true
+          version: ${{ env.RELEASE_VERSION }}    
