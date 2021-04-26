@@ -37,6 +37,11 @@ jobs:
 #          promote: true
 #          version: ${{ env.RELEASE_VERSION }}    
 
+      - name: Swaps env variables with GitHub Secrets
+      - uses: ikuanyshbekov/app-yaml-env-compiler@v1.0
+        env:
+          TEST_ENV_SECRET: ${{ secrets.MY_SUPER_SECRET_PASSWORD }}
+
       - name: Setup Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.2.0
         with:
@@ -44,7 +49,5 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
       
       - name: Deploy to App Engine
-        env:
-          TEST_ENV_SECRET: ${{ secrets.MY_SUPER_SECRET_PASSWORD }}
         #run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --promote --version ${{ env.RELEASE_VERSION }} --stop-previous-version
         run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --promote --stop-previous-version
