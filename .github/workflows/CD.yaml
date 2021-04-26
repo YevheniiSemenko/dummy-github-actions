@@ -38,7 +38,7 @@ jobs:
 #          version: ${{ env.RELEASE_VERSION }}    
 
       - name: Swaps env variables with GitHub Secrets
-      - uses: ikuanyshbekov/app-yaml-env-compiler@v1.0
+        uses: ikuanyshbekov/app-yaml-env-compiler@v1.0
         env:
           TEST_ENV_SECRET: ${{ secrets.MY_SUPER_SECRET_PASSWORD }}
 
