@@ -25,17 +25,22 @@ jobs:
       # Put tag name into variable         
       - name: Set tag name
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      - name: Test
-        run: |
-          echo $RELEASE_VERSION
-          echo ${{ env.RELEASE_VERSION }}        
 
-      # Deploy to Google App Engine     
-      - name: Deploy to App Engine
-        uses: google-github-actions/deploy-appengine@v0.2.0
+#      # Deploy to Google App Engine     
+#      - name: Deploy to App Engine
+#        uses: google-github-actions/deploy-appengine@v0.2.0
+#        with:
+#          deliverables: app.yaml
+#          project_id: ${{ secrets.GCP_PROJECT }}
+#          credentials: ${{ secrets.GCP_SA_KEY }}
+#          promote: true
+#          version: ${{ env.RELEASE_VERSION }}    
+
+      - name: Setup Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.2.0
         with:
-          deliverables: app.yaml
           project_id: ${{ secrets.GCP_PROJECT }}
-          credentials: ${{ secrets.GCP_SA_KEY }}
-          promote: true
-          version: ${{ env.RELEASE_VERSION }}    
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+      
+      - name: Deploy to App Engine
+        run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --promote --version ${{ env.RELEASE_VERSION }} --stop-previous-version
