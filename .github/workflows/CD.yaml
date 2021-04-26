@@ -5,8 +5,8 @@ name:
 on:
   # Triggers the workflow on push tag that match mask v*.*.*
   push:
-    tags:
-      - 'v*-*-*'
+    branch:
+      - master
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -14,7 +14,6 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
-    if: github.event.base_ref == 'refs/heads/master'    
 
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -45,5 +44,7 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
       
       - name: Deploy to App Engine
+        env:
+          TEST_ENV_SECRET: ${{ secrets.MY_SUPER_SECRET_PASSWORD }}
         #run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --promote --version ${{ env.RELEASE_VERSION }} --stop-previous-version
-        run: gcloud app deploy --help
+        run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --promote --stop-previous-version
