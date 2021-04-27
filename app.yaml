@@ -18,8 +18,8 @@ resources:
   disk_size_gb: 10
 
 env_variables:
-#  APP_NAME: LOL
-#  APP_ENV: production
+  APP_NAME: LOL
+  APP_ENV: production
 #  APP_DEBUG: false
 #  APP_LOG_LEVEL: debug
 #  APP_LOG: errorlog
