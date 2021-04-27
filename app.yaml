@@ -24,9 +24,9 @@ env_variables:
     #  APP_DEBUG: false
   APP_LOG_LEVEL: debug
   APP_LOG: errorlog
-  APP_URL: "https://lol.com"
+    #  APP_URL: "https://lol.com"
 
-  LOG_CHANNEL: "stackdriver"
+    #LOG_CHANNEL: "stackdriver"
 
   STORAGE_DIR: /tmp
 
@@ -35,7 +35,7 @@ env_variables:
   DB_PORT: 3306
   DB_DATABASE: lol
   DB_USERNAME: webuser
-  DB_SOCKET: "/cloudsql/lol-123456:us-central1:lol"
+    #DB_SOCKET: "/cloudsql/lol-123456:us-central1:lol"
 
   BROADCAST_DRIVER: pusher
   CACHE_DRIVER: file
@@ -52,7 +52,7 @@ env_variables:
   MAIL_USERNAME: postmaster@mg.lol.com
   MAIL_ENCRYPTION: TLS
   MAIL_FROM_ADDRESS: postmaster@mg.lol.com
-  MAIL_FROM_NAME: "LoL LLC"
+    #MAIL_FROM_NAME: "LoL LLC"
   SYSTEM_MAIL_ADDRESS: postmaster@mg.lol.com
 
   MAILGUN_DOMAIN: mg.lol.com
