@@ -26,7 +26,7 @@ env_variables:
   APP_LOG: errorlog
   APP_URL: "https://lol.com"
 
-  LOG_CHANNEL: 'stackdriver'
+  LOG_CHANNEL: "stackdriver"
 
   STORAGE_DIR: /tmp
 
