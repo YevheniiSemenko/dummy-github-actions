@@ -26,12 +26,10 @@ jobs:
         uses: anothrNick/github-tag-action@1.26.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_BRANCHES: release.*,hotfix.*
-          WITH_V: true        
 
       # Put tag name into variable         
       - name: Get tag name
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        run: echo "RELEASE_VERSION=$(git describe --abbrev=0 --tags `git rev-list --tags --max-count=1`)" >> $GITHUB_ENV
 
       - name: Setup Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.2.0
