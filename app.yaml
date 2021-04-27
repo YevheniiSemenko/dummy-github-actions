@@ -21,7 +21,7 @@ env_variables:
   # Non sensetive variables
   APP_NAME: LOL
   APP_ENV: production
-    #  APP_DEBUG: false
+  APP_DEBUG: false
   APP_LOG_LEVEL: debug
   APP_LOG: errorlog
     #  APP_URL: "https://lol.com"
