@@ -43,11 +43,11 @@ jobs:
         run: |
           cat ./app.yaml
 
-#      - name: Setup Cloud SDK
-#        uses: google-github-actions/setup-gcloud@v0.2.0
-#        with:
-#          project_id: ${{ secrets.GCP_PROJECT }}
-#          service_account_key: ${{ secrets.GCP_SA_KEY }}
-#      
-#      - name: Deploy to App Engine
-#        run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --promote --stop-previous-version
+      - name: Setup Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.2.0
+        with:
+          project_id: ${{ secrets.GCP_PROJECT }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+      
+      - name: Deploy to App Engine
+        run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --promote --stop-previous-version
