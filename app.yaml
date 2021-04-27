@@ -18,57 +18,57 @@ resources:
   disk_size_gb: 10
 
 env_variables:
+  # Non sensetive variables
   APP_NAME: LOL
   APP_ENV: production
-#  APP_DEBUG: false
-#  APP_LOG_LEVEL: debug
-#  APP_LOG: errorlog
-  APP_KEY: $APP_KEY
-#  APP_URL: "https://lol.com"
-#
-#  LOG_CHANNEL: 'stackdriver'
-#
-#  STORAGE_DIR: /tmp
-#
-#  DB_CONNECTION: mysql
-#  DB_HOST: 127.0.0.1
-#  DB_PORT: 3306
-#  DB_DATABASE: lol
-#  DB_USERNAME: webuser
-  DB_PASSWORD: $DB_PASSWORD
-#  DB_SOCKET: "/cloudsql/lol-123456:us-central1:lol"
-#
-#  BROADCAST_DRIVER: pusher
-#  CACHE_DRIVER: file
-#  SESSION_DRIVER: database
-#  QUEUE_DRIVER: database
-#
-#  REDIS_HOST: 127.0.0.1
-#  REDIS_PASSWORD: null
-#  REDIS_PORT: 6379
-#
-#  MAIL_DRIVER: mailgun
-#  MAIL_HOST: smtp.mailgun.org
-#  MAIL_PORT: 587
-#  MAIL_USERNAME: postmaster@mg.lol.com
-  MAIL_PASSWORD: $MAIL_PASSWORD
-#  MAIL_ENCRYPTION: TLS
-#  MAIL_FROM_ADDRESS: postmaster@mg.lol.com
-#  MAIL_FROM_NAME: "LoL LLC"
-#  SYSTEM_MAIL_ADDRESS: postmaster@mg.lol.com
-#
-#  MAILGUN_DOMAIN: mg.lol.com
-  MAILGUN_SECRET: $MAILGUN_SECRET
-#  MAILGUN_ADMIN_EMAIL: sasha@lol.com
-#
-#  PUSHER_APP_ID: 1234567
+  APP_DEBUG: false
+  APP_LOG_LEVEL: debug
+  APP_LOG: errorlog
+  APP_URL: "https://lol.com"
+
+  LOG_CHANNEL: 'stackdriver'
+
+  STORAGE_DIR: /tmp
+
+  DB_CONNECTION: mysql
+  DB_HOST: 127.0.0.1
+  DB_PORT: 3306
+  DB_DATABASE: lol
+  DB_USERNAME: webuser
+  DB_SOCKET: "/cloudsql/lol-123456:us-central1:lol"
+
+  BROADCAST_DRIVER: pusher
+  CACHE_DRIVER: file
+  SESSION_DRIVER: database
+  QUEUE_DRIVER: database
+
+  REDIS_HOST: 127.0.0.1
+  REDIS_PASSWORD: null
+  REDIS_PORT: 6379
+
+  MAIL_DRIVER: mailgun
+  MAIL_HOST: smtp.mailgun.org
+  MAIL_PORT: 587
+  MAIL_USERNAME: postmaster@mg.lol.com
+  MAIL_ENCRYPTION: TLS
+  MAIL_FROM_ADDRESS: postmaster@mg.lol.com
+  MAIL_FROM_NAME: "LoL LLC"
+  SYSTEM_MAIL_ADDRESS: postmaster@mg.lol.com
+
+  MAILGUN_DOMAIN: mg.lol.com
+  MAILGUN_ADMIN_EMAIL: sasha@lol.com
+
+  PUSHER_APP_ID: 1234567
+
+  # Secrets 
   PUSHER_APP_KEY: $PUSHER_APP_KEY
   PUSHER_APP_SECRET: $PUSHER_APP_SECRET
-# 
   STRIPE_KEY: $STRIPE_KEY   
   STRIPE_SECRET: $STRIPE_SECRET
   STRIPE_WEBHOOK_SECRET: $STRIPE_WEBHOOK_SECRET
-
   JWT_SECRET: $JWT_SECRET
-
   DEEPLAPIKEY: $DEEPLAPIKEY    
+  APP_KEY: $APP_KEY
+  DB_PASSWORD: $DB_PASSWORD
+  MAIL_PASSWORD: $MAIL_PASSWORD
+  MAILGUN_SECRET: $MAILGUN_SECRET
