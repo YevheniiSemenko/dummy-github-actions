@@ -47,7 +47,9 @@ jobs:
       # Remove old versions (older than 2 latest release versions)
       - name: Remove old versions
         run: |
-          for in in $(gcloud app versions list --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | sort -r | awk 'NR>n{print A[NR%n]} {A[NR%n]=$2}' n=4);
+          old_versions=$(gcloud app versions list --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | sort -r | awk 'NR>n{print A[NR%n]} {A[NR%n]=$2}' n=3)
+          old_versions=(${old_versions[@]} "rc-${{ env.RELEASE_VERSION }}")
+          for i in "${versions[@]}";
           do
             gcloud app versions delete --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} delete $i
             echo "Removed App Engine version - $i";
