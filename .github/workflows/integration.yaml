@@ -46,4 +46,4 @@ jobs:
 
       # Deploy App in dry-run mode
       - name: Deploy release vesrion
-        run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --no-promote --version ${{ env.RELEASE_VERSION }}
+        run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --no-promote --version rc-${{ env.RELEASE_VERSION }}
