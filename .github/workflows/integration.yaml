@@ -26,6 +26,8 @@ jobs:
         uses: anothrNick/github-tag-action@1.26.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_BRANCHES: .*
+          VERBOSE: true
 
       # Put tag name into variable         
       - name: Get tag name
