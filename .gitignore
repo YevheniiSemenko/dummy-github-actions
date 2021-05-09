@@ -2,3 +2,4 @@
 **/settings.yml
 build/*
 sandbox-311413-app-engine-sa.json
+app.yaml
