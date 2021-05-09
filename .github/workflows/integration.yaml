@@ -26,17 +26,24 @@ jobs:
         uses: anothrNick/github-tag-action@1.26.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_BRANCHES: .*
+          DEFAULT_BUMP: patch
 
-      # Put tag name into variable         
-      - name: Get tag name
-        run: echo "RELEASE_VERSION=$(git describe --abbrev=0 --tags `git rev-list --tags --max-count=1`)" >> $GITHUB_ENV
+      # Replace dots with dashes, since App Engine doesn't support dots in the version names
+      - name: Get release version name from latest tag
+        run: echo "RELEASE_VERSION=$(git describe --abbrev=0 --tags `git rev-list --tags --max-count=1`)" | sed 's/\./-/g' >> $GITHUB_ENV
 
+      # Setup gcloud utils
       - name: Setup Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.2.0
         with:
           project_id: ${{ secrets.GCP_PROJECT }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
-      
-      - name: Deploy to App Engine
-        #run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --no-promote --version ${{ env.RELEASE_VERSION }}
-        run: echo "tag is ${RELEASE_VERSION}"
+
+      # Copy app.yaml from bucket
+      - name: Dowload app.yaml from Google Storage
+        run: gsutil cp ${{ secrets.GCP_BUCKET }}/app.yaml app.yaml
+
+      # Deploy App in dry-run mode
+      - name: Deploy release vesrion
+        run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --no-promote --version rc-${{ env.RELEASE_VERSION }}
