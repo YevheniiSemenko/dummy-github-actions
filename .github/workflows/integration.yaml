@@ -38,7 +38,9 @@ jobs:
         with:
           project_id: ${{ secrets.GCP_PROJECT }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
-      
-      - name: Deploy to App Engine
+
+      # Replace dots with dashes, since App Engine doesn't support dots in the version names
+      - name: Replace dots with dashes
         #run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --no-promote --version ${{ env.RELEASE_VERSION }}
-        run: echo "tag is ${RELEASE_VERSION}"
+        run: |
+          echo "${RELEASE_VERSION}" | sed 's/\./-/g'
