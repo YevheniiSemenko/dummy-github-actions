@@ -47,3 +47,13 @@ jobs:
       # Deploy App in dry-run mode
       - name: Deploy release vesrion
         run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --no-promote --version rc-${{ env.RELEASE_VERSION }}
+
+      # Adds comment with URL of release app to a pull request
+      - name: Add URL to PR comment
+        uses: mshick/add-pr-comment@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          message: |
+            *** Release URL: https://rc-${{ env.RELEASE_VERSION }}-dot-${{ secrets.GCP_PROJECT }}.appspot.com/ ***
+          allow-repeats: true
