@@ -3,9 +3,9 @@ name: Deploy
 
 # Controls when the action will run. 
 on:
-  # Triggers the workflow on push tag that match mask v*.*.*
+  # Triggers the workflow on push into master branch
   push:
-    branch:
+    branches:
       - master
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -47,7 +47,12 @@ jobs:
       # Remove old versions (older than 2 latest release versions)
       - name: Remove old versions
         run: |
-          for i in $(gcloud app versions list --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | head -n -3 | sed 1d | awk '{print $2}');
+          # Exclude 2 latest versions
+          old_versions=$(gcloud app versions list --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | head -n -3 | sed 1d | awk '{print $2}');
+          # Add release candidate version in to remove list
+          old_versions=(${old_versions[@]} "rc-${{ env.RELEASE_VERSION }}")
+          # Loop with old versions removing
+          for i in "${old_versions[@]}";
           do
             gcloud app versions delete --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} delete $i;
             echo "Removed App Engine version - $i";
