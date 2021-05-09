@@ -20,8 +20,10 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Pull repository into $GITHUB_WORKSPACE with all history for all branches and tags
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       # Replace dots with dashes, since App Engine doesn't support dots in the version names
       - name: Get release version name from latest tag

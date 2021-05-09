@@ -19,12 +19,12 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Pull repository into $GITHUB_WORKSPACE with all history for all branches and tags
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-      - name: Pull tags
-        run: git pull --tags
-
+      # Increment version of tag based on commit message context #patch, #minor, #major and #none
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.26.0
         env:
