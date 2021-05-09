@@ -44,7 +44,6 @@ jobs:
 
       # Remove old versions (older than 2 latest release versions)
       - name: Remove old versions
-        run: gsutil cp ${{ secrets.GCP_BUCKET }}/app.yaml app.yaml
         run: |
           for i in $(gcloud app versions list --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | sort -r | sed '$d' | awk 'NR>3 { print $2 }');
             do gcloud app versions delete --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} delete $i;
