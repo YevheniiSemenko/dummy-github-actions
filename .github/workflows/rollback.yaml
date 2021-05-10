@@ -41,18 +41,6 @@ jobs:
       - name: Rollback to specific version
         run: gcloud app deploy app.yaml --quiet --project ${{ secrets.GCP_PROJECT }} --image-url eu.gcr.io/${{ secrets.GCP_PROJECT }}/appengine/${{ secrets.GCP_APP_SERVICE_NAME }}.${{ env.ROLLBACK_VERSION }} --version ${{ env.ROLLBACK_VERSION }} --promote --stop-previous-version
 
-      # Stop previous versions
-      - name: Stop previous versions
-        run: |
-          # List of all versions that don't recieve traffic
-          previous_versions=$(gcloud app versions list --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | grep -v '1.00' | sed 1d | awk '{print $2}');
-          # Loop with previous versions stopping
-          for i in "${previous_versions[@]}";
-          do
-            gcloud app versions stop --quiet --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} $i;
-            echo "Stopped App Engine version - $i";
-          done
-
       # Remove old versions (older than last and previous release versions)
       - name: Remove old versions
         run: |
