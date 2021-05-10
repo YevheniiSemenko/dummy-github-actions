@@ -61,7 +61,7 @@ jobs:
       - name: Remove old versions
         run: |
           # Exclude last and previous release versions
-          old_versions=$(gcloud app versions list --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | grep -v '1.00' | sed 1d | head -n-1 | awk '{print $2}';
+          old_versions=$(gcloud app versions list --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | grep -v '1.00' | sed 1d | head -n-1 | awk '{print $2}');
           # Loop with old versions removing
           for i in "${old_versions[@]}";
           do
