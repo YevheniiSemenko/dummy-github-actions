@@ -43,7 +43,7 @@ jobs:
 
       # Switch traffic to $RELEASE_VERSION
       - name: Switch all traffic to new version
-        run: gcloud app services set-traffic --quiet --project ${{ secrets.GCP_PROJECT }} ${{ secrets.GCP_APP_SERVICE_NAME }} --splits={{ env.RELEASE_VERSION }}=1
+        run: gcloud app services set-traffic --quiet --project ${{ secrets.GCP_PROJECT }} ${{ secrets.GCP_APP_SERVICE_NAME }} --splits=${{ env.RELEASE_VERSION }}=1
 
       # Stop previous versions
       - name: Stop previous versions
