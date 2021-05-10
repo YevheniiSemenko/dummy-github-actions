@@ -1,0 +1,66 @@
+# Name of workflow
+name: Rollback
+
+# Controls when the action will run. 
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Pull repository into $GITHUB_WORKSPACE with all history for all branches and tags
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      # Setup gcloud utils
+      - name: Setup Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.2.0
+        with:
+          project_id: ${{ secrets.GCP_PROJECT }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      # Copy app.yaml from bucket
+      - name: Dowload app.yaml from Google Storage
+        run: gsutil cp ${{ secrets.GCP_BUCKET }}/app.yaml app.yaml
+
+      # Get App Engine rollback version from rollback.json
+      - name: Get release version name
+        # Replace dots with dashes, since App Engine doesn't support dots in the version names
+        run: echo "ROLLBACK_VERSION=$(cat rollback.json | jq -r '.version')" | sed 's/\./-/g' >> $GITHUB_ENV
+
+      # Deploy of $ROLLBACK_VERSION
+      - name: Rollback to specific version
+        run: gcloud app deploy app.yaml --quiet --project ${{ secrets.GCP_PROJECT }} --image-url eu.gcr.io/${{ secrets.GCP_PROJECT }}/appengine/${{ secrets.GCP_APP_SERVICE_NAME }}.${{ env.RELEASE_VERSION }} --version ${{ env.RELEASE_VERSION }} --promote --stop-previous-version          
+
+      # Stop previous versions
+      - name: Stop previous versions
+        run: |
+          # List of all versions that don't recieve traffic
+          previous_versions=$(gcloud app versions list --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | grep -v '1.00' | sed 1d | awk '{print $2}');
+          # Loop with previous versions stopping
+          for i in "${previous_versions[@]}";
+          do
+            gcloud app versions stop --quiet --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} $i;
+            echo "Stopped App Engine version - $i";
+          done
+
+      # Remove old versions (older than last and previous release versions)
+      - name: Remove old versions
+        run: |
+          # Exclude last and previous release versions
+          old_versions=$(gcloud app versions list --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | grep -v '1.00' | sed 1d | head -n-1 | awk '{print $2}');
+          # Loop with old versions removing
+          for i in "${old_versions[@]}";
+          do
+            gcloud app versions delete --quiet --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} $i;
+            echo "Removed App Engine version - $i";
+          done
