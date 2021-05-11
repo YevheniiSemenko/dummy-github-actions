@@ -51,7 +51,9 @@ jobs:
 
       # Copy sa-account.json from secrets
       - name: Download sa-key.json
-        run: echo ${{ secrets.GCP_SA_KEY }} > sa-key.json
+        run: 'echo $GCP_SA_KEY > sa-key.json'
+        env:
+          GCP_SA_KEY: ${{secrets.GCP_SA_KEY}}
 
       # Deploy App in dry-run mode
       - name: Deploy release vesrion
