@@ -59,9 +59,9 @@ jobs:
         env:
           GCP_SA_KEY: ${{secrets.GCP_SA_KEY}}
 
-      # Deploy App in dry-run mode
-      - name: Deploy release vesrion
-        run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --no-promote --version ${{ env.RELEASE_VERSION }}
+            #      # Deploy App in dry-run mode
+            #      - name: Deploy release vesrion
+            #        run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --no-promote --version ${{ env.RELEASE_VERSION }}
 
       # Adds comment with URL of release app to a pull request
       - name: Add URL to PR comment
@@ -76,11 +76,7 @@ jobs:
       # Stop previous versions
       - name: Stop previous versions
         run: |
-          # List of all versions that don't recieve traffic, except last deployed version
-          previous_versions=$(gcloud app versions list --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | grep -v '1.00' | sed 1d | head -n-2 | awk '{print $2}');
-          # Loop with previous versions stopping
-          for i in "${previous_versions[@]}";
-          do
-            gcloud app versions stop --quiet --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} $i;
-            echo "Stopped App Engine version - $i";
-          done
+          # Recieve all versions that don't recieve traffic, except last 2 deployed version
+          previous_versions=$(gcloud app versions list --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | grep -v '1.00' | sed 1d | head -n-2 | awk '{print $2}' | tr '\n' ' ');
+          # Send command to stop
+          gcloud app versions stop --quiet --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} $previous_versions
