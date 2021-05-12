@@ -35,7 +35,7 @@ jobs:
           WITH_V: true
 
       # Replace dots with dashes, since App Engine doesn't support dots in the version names
-      - name: Get release version name from latest tag
+      - name: Get release version from tag
         run: echo "RELEASE_VERSION=$(git describe --abbrev=0 --tags `git rev-list --tags --max-count=1`)" | sed 's/\./-/g' >> $GITHUB_ENV
 
       # Setup gcloud utils
@@ -45,13 +45,24 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
 
+      # Stop previous versions
+      - name: Stop previous versions
+        run: |
+          # Recieve all versions that don't recieve traffic, except last deployed version; thus, in the end, there will be two live versions
+          OLD_RELEASE_VERSIONS=$(gcloud app versions list --project=${{ secrets.GCP_PROJECT }} --service=${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | grep -v '1.00' | sed '1d;$d' | awk '{print $2}' | tr '\n' ' ')
+          # Send command to stop
+          echo "Versions being stopped ${OLD_RELEASE_VERSIONS}"
+          gcloud app versions stop --quiet --project=${{ secrets.GCP_PROJECT }} --service=${{ secrets.GCP_APP_SERVICE_NAME }} ${OLD_RELEASE_VERSIONS}
+
       # Copy app.yaml from bucket
       - name: Dowload app.yaml from Google Storage
         run: gsutil cp ${{ secrets.GCP_BUCKET }}/app.yaml app.yaml
 
-      # Copy app engine sa
-      - name: Download app-engine-sa.json
-        run: gsutil cp ${{ secrets.GCP_BUCKET }}/app-engine-sa.json sa.json
+      # Copy App Engine SA from github secrets
+      - name: Extract app-engine-sa.json from github secret
+        run: 'echo $GCP_SA_KEY > app-engine-sa.json'
+        env:
+          GCP_SA_KEY: ${{secrets.GCP_SA_KEY}}
 
       # Deploy App in dry-run mode
       - name: Deploy release vesrion
