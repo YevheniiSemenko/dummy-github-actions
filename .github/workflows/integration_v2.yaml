@@ -53,9 +53,15 @@ jobs:
       - name: Download app-engine-sa.json
         run: gsutil cp ${{ secrets.GCP_BUCKET }}/app-engine-sa.json sa.json
 
-      # Deploy App in dry-run mode
-      - name: Deploy release vesrion
-        run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --no-promote --version ${{ env.RELEASE_VERSION }}
+      # Copy App Engine SA from github secrets
+      - name: Extract app-engine-sa.json from github secret
+        run: 'echo $GCP_SA_KEY > app-engine-sa.json'
+        env:
+          GCP_SA_KEY: ${{secrets.GCP_SA_KEY}}
+
+            #      # Deploy App in dry-run mode
+            #      - name: Deploy release vesrion
+            #        run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --no-promote --version ${{ env.RELEASE_VERSION }}
 
       # Adds comment with URL of release app to a pull request
       - name: Add URL to PR comment
@@ -66,3 +72,14 @@ jobs:
           message: |
             *** Release URL: https://${{ env.RELEASE_VERSION }}-dot-${{ secrets.GCP_PROJECT }}.appspot.com/ ***
           allow-repeats: true
+
+      # Stop previous versions
+      - name: Stop previous versions
+        shell: bash
+        run: |
+          # Recieve all versions that don't recieve traffic, except last 2 deployed version
+          OLD_RELEASE_VERSIONS=$(gcloud app versions list --project=${{ secrets.GCP_PROJECT }} --service=${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | grep -v '1.00' | sed 1d | head -n-2 | awk '{print $2}' | tr '\n' ' ')
+          OLD_RELEASE_VERSIONS=$(echo "123 232")
+          # Send command to stop
+          echo "Versions being stopped ${OLD_RELEASE_VERSIONS}"
+          gcloud app versions stop --quiet --project=${{ secrets.GCP_PROJECT }} --service=${{ secrets.GCP_APP_SERVICE_NAME }} ${OLD_RELEASE_VERSIONS}
