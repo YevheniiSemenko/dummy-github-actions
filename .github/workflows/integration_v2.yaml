@@ -75,9 +75,10 @@ jobs:
 
       # Stop previous versions
       - name: Stop previous versions
+        shell: bash
         run: |
           # Recieve all versions that don't recieve traffic, except last 2 deployed version
-          echo "OLD_RELEASE_VERSIONS=$(gcloud app versions list --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | grep -v '1.00' | sed 1d | head -n-2 | awk '{print $2}' | tr '\n' ' ')" >> $GITHUB_ENV
+          OLD_RELEASE_VERSIONS=$(gcloud app versions list --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | grep -v '1.00' | sed 1d | head -n-2 | awk '{print $2}' | tr '\n' ' ')
           # Send command to stop
-          echo "Versions being stopped ${{ env.OLD_RELEASE_VERSIONS }}"
-          gcloud app versions stop --quiet --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} ${{ env.OLD_RELEASE_VERSIONS }}
+          echo "Versions being stopped ${OLD_RELEASE_VERSIONS}"
+          gcloud app versions stop --quiet --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} ${OLD_RELEASE_VERSIONS}
