@@ -79,4 +79,5 @@ jobs:
           # Recieve all versions that don't recieve traffic, except last 2 deployed version
           list_of_versions=$(gcloud app versions list --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | grep -v '1.00' | sed 1d | head -n-2 | awk '{print $2}' | tr '\n' ' ')
           # Send command to stop
+          echo "Versions being stopped ${list_of_versions}"
           gcloud app versions stop --quiet --project ${{ secrets.GCP_PROJECT }} --service ${{ secrets.GCP_APP_SERVICE_NAME }} ${list_of_versions}
