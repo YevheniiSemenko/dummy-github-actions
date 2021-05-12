@@ -64,6 +64,8 @@ jobs:
           echo "5"
           echo "$(gcloud app versions list --project=${{ secrets.GCP_PROJECT }} --service=${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | grep -v '1.00' | sed '1d' | head -n -2 | awk '{print $2}' | tr '\n' ' ')"
           echo "6"
+
+          gcloud app versions list --project=${{ secrets.GCP_PROJECT }} --service=${{ secrets.GCP_APP_SERVICE_NAME }} --sort-by LAST_DEPLOYED | grep -v '1.00' | sed '1d' | head -n -2
           # Send command to stop
           echo "Versions being stopped ${OLD_RELEASE_VERSIONS}"
           gcloud app versions stop --quiet --project=${{ secrets.GCP_PROJECT }} --service=${{ secrets.GCP_APP_SERVICE_NAME }} ${OLD_RELEASE_VERSIONS}
