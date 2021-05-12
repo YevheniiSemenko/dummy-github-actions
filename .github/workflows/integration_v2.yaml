@@ -49,6 +49,10 @@ jobs:
       - name: Dowload app.yaml from Google Storage
         run: gsutil cp ${{ secrets.GCP_BUCKET }}/app.yaml app.yaml
 
+      # Copy app engine sa
+      - name: Download app-engine-sa.json
+        run: gsutil cp ${{ secrets.GCP_BUCKET }}/app-engine-sa.json sa.json
+
       # Deploy App in dry-run mode
       - name: Deploy release vesrion
         run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT }} --quiet --no-promote --version ${{ env.RELEASE_VERSION }}
